@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Ronaldo Barbosa">
+    <title>R E C I B O</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        main, footer, .mensagem-alerta {
+            text-align: center;
+        }
+        form {
+            max-width: 800px;
+            padding-top: 30px;
+            display: block;
+            margin: 0 auto;
+        }
+        .mensagem-alerta {
+            max-width: 500px;
+            margin: 20px auto;
+        }
+        #logo {
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <div align="center">
+            <img id="logo" src="./imagens/logomarcos.jpg" alt="LOGO">
+        </div>
+        <h1>RECIBO</h1>
+        <form id="reciboForm" class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="control-label col-sm-3">Recebi(emos) de</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="origem" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3">Valor</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="valor" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3">Referente a(o)</label>
+                <div class="col-sm-9">
+                    <textarea class="form-control" id="referente" rows="2" required></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3">Data</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="data" value="" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12 text-right">
+                    <button type="submit" class="btn btn-primary">Criar Recibo</button>
+                </div>
+            </div>
+        </form>
+    </main>
+    <footer>
+        <hr>
+        <div class="copyright">Desenvolvido por <a href="https://ronaldo1972.com.br" target="_blank">Ronaldo1972</a></div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPDF/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            const today = new Date().toLocaleDateString('pt-BR');
+            $('#data').val(today);
+
+            $('#reciboForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const origem = $('#origem').val();
+                const valor = $('#valor').val();
+                const referente = $('#referente').val();
+                const data = $('#data').val();
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                doc.setFont('Arial', 'B', 18);
+                doc.text("RECIBO", 105, 20, { align: "center" });
+
+                // Logo (se necessário, adicione um logo com o método 'doc.addImage')
+                // doc.addImage('imagens/recibomarcos.jpg', 'JPEG', 10, 10, 50, 50); // Exemplo
+
+                doc.setFont('Arial', 'B', 12);
+                doc.text(`Recebi(emos) de: ${origem}`, 20, 40);
+                doc.text(`Valor: ${valor}`, 20, 50);
+                doc.text(`Referente a(o): ${referente}`, 20, 60);
+                doc.text(`Data: ${data}`, 20, 70);
+
+                // Gerar o recibo em PDF
+                doc.save('recibo.pdf');
+            });
+        });
+    </script>
+</body>
+</html>
