@@ -3,49 +3,129 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>R E C I B O 2</title>
+  <title>R E C I B O</title>
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
   />
   <style>
-    main, footer, .mensagem-alerta {
-      text-align: center;
+    body {
+      font-family: 'Arial', sans-serif;
+      padding: 20px;
+      background: #fff;
     }
-    form {
-      max-width: 800px;
-      padding-top: 30px;
-      margin: 0 auto;
-    }
+
     .recibo-container {
       max-width: 800px;
       margin: 30px auto;
-      padding: 20px;
-      border: 1px solid #ccc;
+      padding: 30px;
+      border: 1px solid #ddd;
       background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      position: relative;
       display: none;
     }
-    .recibo-header img {
-      width: 200px;
+
+    .recibo-header {
+      display: flex;
+      align-items: center;
       margin-bottom: 15px;
+      border-bottom: 2px solid #00a6b5;
+      padding-bottom: 10px;
     }
-    .recibo-linha {
-      text-align: left;
-      margin-bottom: 8px;
+
+    .recibo-header img {
+      width: 100px;
+      margin-right: 20px;
     }
-    .recibo-valor {
-      text-align: right;
+
+    .recibo-header .title {
+      font-size: 24px;
       font-weight: bold;
-      font-size: 1.2em;
-      margin-top: 10px;
+      color: #555;
+      margin: 0;
     }
+
+    .recibo-header .valor-box {
+      margin-left: auto;
+      background: #eee;
+      padding: 8px 15px;
+      border-radius: 4px;
+      text-align: right;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .recibo-linha {
+      margin: 15px 0;
+      display: flex;
+      align-items: baseline;
+    }
+
+    .recibo-linha label {
+      font-weight: bold;
+      min-width: 180px;
+      margin-right: 10px;
+    }
+
+    .recibo-linha .content {
+      flex-grow: 1;
+      border-bottom: 1px solid #999;
+      padding: 2px 5px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .recibo-linha .content.highlight {
+      background: #e6f2ff;
+      font-weight: bold;
+    }
+
+    .recibo-footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .assinatura {
+      margin-top: 20px;
+      text-align: center;
+      font-style: italic;
+      font-weight: bold;
+      font-size: 16px;
+      padding-top: 10px;
+      border-top: 1px dashed #999;
+    }
+
+    .cpf {
+      font-size: 12px;
+      font-weight: normal;
+      margin-top: 3px;
+    }
+
+    .no-print {
+      display: block;
+    }
+
     @media print {
-      .no-print { display: none !important; }
-      .recibo-container { display: block !important; border: none; }
+      body {
+        background: transparent !important;
+        padding: 0 !important;
+      }
+      .recibo-container {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 20px !important;
+      }
+      .no-print {
+        display: none !important;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Formulário -->
   <div class="container no-print" id="formContainer">
     <div align="center">
       <img src="imagens/logomarcos.jpg" width="200px" alt="LOGO" />
@@ -84,17 +164,41 @@
     </form>
   </div>
 
-  <!-- Recibo Visual -->
+  <!-- Recibo Gerado -->
   <div class="recibo-container" id="reciboContainer">
     <div class="recibo-header">
-      <img src="imagens/recibomarcos.png" width="100%" alt="Recibo" />
+      <img src="imagens/recibomarcos.png" alt="Logo" />
+      <h1 class="title">RECIBO</h1>
+      <div class="valor-box" id="reciboValorBox">R$ <span id="reciboValor">0,00</span></div>
     </div>
-    <div class="recibo-valor" id="reciboValor"></div>
-    <div class="recibo-linha"><strong>Recebi(emos) de:</strong> <span id="reciboOrigem"></span></div>
-    <div class="recibo-linha"><strong>Valor por extenso:</strong> <span id="reciboExtenso"></span></div>
-    <div class="recibo-linha"><strong>Referente a(o):</strong> <span id="reciboReferente"></span></div>
-    <div class="recibo-linha"><strong>Data:</strong> <span id="reciboData"></span></div>
-    <div class="text-center no-print" style="margin-top: 20px;">
+
+    <div class="recibo-linha">
+      <label>Recebi(emos) de</label>
+      <div class="content" id="reciboOrigem"></div>
+    </div>
+
+    <div class="recibo-linha">
+      <label>A importância de</label>
+      <div class="content highlight" id="reciboExtenso"></div>
+    </div>
+
+    <div class="recibo-linha">
+      <label>Referente a(o)</label>
+      <div class="content" id="reciboReferente"></div>
+    </div>
+
+    <div class="recibo-footer">
+      para clareza firmo(amos) o presente.
+    </div>
+
+    <div class="assinatura" id="reciboAssinatura">
+      Francisco Marcos da Silva Dantas
+    </div>
+    <div class="cpf" id="reciboCpf">
+      C.P.F.: 738.135.323-72
+    </div>
+
+    <div class="text-center no-print" style="margin-top: 30px;">
       <button class="btn btn-default" onclick="window.print()">Imprimir</button>
       <button class="btn btn-primary" onclick="gerarPDF()">Salvar como PDF</button>
       <button class="btn btn-link" onclick="voltarForm()">Voltar</button>
@@ -115,12 +219,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script>
-    // Formatação
+    // Formatação dos campos
     $(document).ready(function () {
       $('input[name=valor]').mask('#.##0,00', { reverse: true });
       $('input[name=data]').mask('00/00/0000');
 
-      // Preenche data atual
       const hoje = new Date();
       const dataFormatada = String(hoje.getDate()).padStart(2, '0') + '/' +
                             String(hoje.getMonth() + 1).padStart(2, '0') + '/' +
@@ -128,11 +231,10 @@
       $('input[name=data]').val(dataFormatada);
     });
 
-    // Função para converter valor em extenso (em JavaScript)
+    // Função para converter valor em extenso (JavaScript)
     function valorPorExtenso(valor) {
-      // Remove formatação: R$, pontos, vírgulas → mantém apenas número com ponto decimal
       let num = valor.replace(/\D/g, '');
-      if (num.length === 0) return 'zero';
+      if (!num || num === '0') return 'zero';
       if (num.length === 1) num = '00' + num;
       if (num.length === 2) num = '0' + num;
       const inteiro = Math.floor(parseInt(num) / 100);
@@ -222,24 +324,27 @@
         "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
       ];
-      return `Fortaleza, ${dia} de ${meses[mesNum]} de ${ano}`;
+      return `${dia} de ${meses[mesNum]} de ${ano}`;
     }
 
     // Submit do formulário
     document.getElementById('reciboForm').addEventListener('submit', function (e) {
       e.preventDefault();
 
-      const origem = this.origem.value;
-      const valor = this.valor.value;
-      const referente = this.referente.value;
-      const data = this.data.value;
+      const origem = this.origem.value.trim();
+      const valor = this.valor.value.trim();
+      const referente = this.referente.value.trim();
+      const data = this.data.value.trim();
 
       // Preenche recibo
       document.getElementById('reciboValor').textContent = valor;
       document.getElementById('reciboOrigem').textContent = origem;
       document.getElementById('reciboExtenso').textContent = valorPorExtenso(valor);
       document.getElementById('reciboReferente').textContent = referente;
-      document.getElementById('reciboData').textContent = dataPorExtenso(data);
+
+      // Data completa
+      const dataExtensa = dataPorExtenso(data);
+      document.querySelector('.recibo-footer').innerHTML = `para clareza firmo(amos) o presente.<br><br><strong>Fortaleza, ${dataExtensa}</strong>`;
 
       // Mostra recibo
       document.getElementById('formContainer').style.display = 'none';
@@ -258,8 +363,10 @@
 
       const canvas = await html2canvas(recibo, {
         scale: 2,
-        useCORS: true
+        useCORS: true,
+        backgroundColor: '#fff'
       });
+
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const imgWidth = 210;
@@ -282,5 +389,4 @@
     }
   </script>
 </body>
-
 </html>
